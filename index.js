@@ -6,7 +6,9 @@ import dotenv from "dotenv";
 const app = Express();
 const port = process.env.PORT || 8000;
 dotenv.config();
-
+app.get("/",(req,res) => {
+    res.status(200).json("Connected")
+})
 app.use(Express.json());
 app.use("/api/auth", authRoute);
 app.use("/api/chat", chatRoute);
