@@ -4,7 +4,7 @@ import chatRoute from "./routes/chatRoute.js";
 import dotenv from "dotenv";
 
 const app = Express();
-const port = 8000;
+const port = process.env.PORT || 8000;
 dotenv.config();
 
 app.use(Express.json());
