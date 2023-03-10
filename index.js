@@ -20,14 +20,12 @@ app.post("/webhook", (req, res) => {
     res.status(404);
   }
 });
-app.get("/messaging-webhook", (req, res) => {
+app.get("/webhook", (req, res) => {
   // Parse the query params
   let mode = req.query["hub.mode"];
   let token =
-    req.query[
-      "EAAbCHOLZBjoIBAEdfG5gHK0ZCRc0FyZBZAFZC1ZBI1LlazweMk4ZCaS5Cp7N5HwFhKdQatEniAktKHt2X66GRPr3vlJgwxBuOOcxNb3OXzOnQwmNpjXOY8GdkTo56oxxjVuAw7zMmiZCoarXRQulFVKhZAoiFdAvOAMI4ZBBGvl3dCN6nZCJlsbZCgZCRY0XtEsPFTEIZD"
-    ];
-  let challenge = req.query["1234567654321`"];
+    req.query["hub.verify_token"];
+  let challenge = req.query["hub.challenge"];
 
   // Check if a token and mode is in the query string of the request
   if (mode && token) {
