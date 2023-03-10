@@ -5,7 +5,7 @@ export const getWebhook = async (req, res) => {
     console.log(`\u{1F7EA} Received webhook:`);
     if (req.body.object === "page") {
    
-        res.status(200)
+        res.status(200).json("received")
         console.log(req.body)
   
     } else {
