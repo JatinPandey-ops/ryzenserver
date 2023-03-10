@@ -2,6 +2,7 @@ import Express from "express";
 import authRoute from "./routes/authRoute.js";
 import chatRoute from "./routes/chatRoute.js";
 import dotenv from "dotenv";
+import { getWebhook } from "./controllers/facebookControllers.js";
 
 const app = Express();
 const port = process.env.PORT || 8000;
@@ -12,14 +13,16 @@ app.get("/",(req,res) => {
 app.use(Express.json());
 app.use("/api/auth", authRoute);
 app.use("/api/chat", chatRoute);
-app.post("/webhook", (req, res) => {
-  console.log(`\u{1F7EA} Received webhook:`);
-  if (req.body.object === "page") {
-    res.status(200).send("EVENT_RECEIVED");
-  } else {
-    res.status(404);
-  }
-});
+
+
+
+
+app.post("/webhook", getWebhook);
+
+
+
+
+
 app.get("/webhook", (req, res) => {
   let mode = req.query["hub.mode"];
   let token =
@@ -43,6 +46,8 @@ app.get("/webhook", (req, res) => {
     }
   }
 });
+
+
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
