@@ -3,9 +3,8 @@ import axios from "axios";
 import { db } from "../firebase.js";
 import { arrayUnion, doc, updateDoc } from "firebase/firestore";
 
-const sendtext = async (docSnap,uuid,psid)=> {
-    const messageArr = await docSnap.data().messages;
-        const message = messageArr.map(({ uid, ...others }) => others);
+const sendtext = async (message,uuid,psid)=> {
+
         const configuration = new Configuration({
           apiKey: process.env.OPENAI_API_KEY,
         });
@@ -22,9 +21,8 @@ const sendtext = async (docSnap,uuid,psid)=> {
           content: response.content,
         };
         await updateDoc(doc(db, "conversations", `${psid}@facebook.com`), {
-          messages: arrayUnion(resData)
-        });
-
+            messages: arrayUnion(resData)
+          });
         await axios.post(
           `https://graph.facebook.com/v16.0/${process.env.FB_PAGE_ID}/messages?&access_token=${process.env.FB_VERIFY_TOKEN}`,
           {
@@ -42,6 +40,9 @@ const sendtext = async (docSnap,uuid,psid)=> {
             },
           }
         );
+
+        
+
 
 } 
 

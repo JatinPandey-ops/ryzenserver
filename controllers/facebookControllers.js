@@ -12,10 +12,10 @@ export const getWebhook = async (req, res) => {
       const webhook_event = req.body.entry[0];
       const psid = webhook_event.messaging[0].sender.id;
       const text = webhook_event.messaging[0].message.text;
-      console.log(psid);
-      console.log(text);
+      // console.log(psid);
+      // console.log(text);
       // const psid = 4835495889835312
-      // const text = "tell me about bears"
+      // const text = "hii"
    
       const userText = {
         uid: uuid(),
@@ -28,24 +28,26 @@ export const getWebhook = async (req, res) => {
         await updateDoc(doc(db, "conversations", `${psid}@facebook.com`), {
           messages:arrayUnion(userText)
         });
-        res.status(200).json("Received");
-    
-        sendtext(docSnap,uuid,psid,text)
+        const docData = await getDoc(doc(db, "conversations", `${psid}@facebook.com`));
+        const messageArr = await docData.data().messages;
+        const message = messageArr.map(({ uid, ...others }) => others);
+        sendtext(message,uuid,psid,text)
+        res.status(200).json("Received webhook");
         
       } else {
         await setDoc(doc(db, "conversations", `${psid}@facebook.com`), {
           messages: [
-            { role: "system", content: "You are a helpful friend." },
-            {
-              role: "user",
-              content:
-                "Your nickname is ryzen and behave like a friend",
-            },
+            { role: "system", content: "You are a helpful friend and you will introduce yourself by name of ryzen." },
           ],
         });
-        res.status(200).json("Received");
+        await updateDoc(doc(db, "conversations", `${psid}@facebook.com`), {
+          messages:arrayUnion(userText)
+        });
         const docSnap = await getDoc(doc(db, "conversations", `${psid}@facebook.com`));
-        sendtext(docSnap,uuid,psid,text)
+        const messageArr = await docSnap.data().messages;
+        const message = messageArr.map(({ uid, ...others }) => others);
+        sendtext(message,uuid,psid,text)
+        res.status(200).json("Received");
       }
     } catch (error) {
       console.log(error);
