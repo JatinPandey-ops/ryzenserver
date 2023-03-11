@@ -7,13 +7,13 @@ export const getWebhook = async (req, res) => {
   console.log(`\u{1F7EA} Received webhook:`);
   if (req.body.object === "page") {
     try {
-      // const webhook_event = req.body.entry[0]
-      // const psid = webhook_event.messaging[0].sender.id
-      // const text = webhook_event.messaging[0].message.text
-      // console.log(psid)
-      // console.log(text)
-      const psid = 4835495889835312
-      const text = "hii there"
+      const webhook_event = req.body.entry[0]
+      const psid = webhook_event.messaging[0].sender.id
+      const text = webhook_event.messaging[0].message.text
+      console.log(psid)
+      console.log(text)
+      // const psid = 4835495889835312
+      // const text = "hii there"
       await setDoc(doc(db, "conversations", `${psid}@facebook.com` ), {
         messages: [
           {role: "system", content: "You are a helpful friend."},
