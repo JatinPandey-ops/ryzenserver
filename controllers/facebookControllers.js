@@ -48,13 +48,13 @@ export const getWebhook = async (req, res) => {
           role: response.role,
           content: response.content
         }
-        const botRes = `{text:"${response.content}"}`
-        
-        await axios.post(`https://graph.facebook.com/v16.0/105376291989178/messages?recipient={id:${psid}}&message=${botRes}&messaging_type=RESPONSE&access_token=${process.env.FB_VERIFY_TOKEN}`)
         await updateDoc(doc(db, "conversations", `${psid}@facebook.com`), {
           
               messages: arrayUnion(resData)
             });
+        const botRes = `{text:"${response.content}"}`
+        
+        await axios.post(`https://graph.facebook.com/v16.0/105376291989178/messages?recipient={id:${psid}}&message=${botRes}&messaging_type=RESPONSE&access_token=${process.env.FB_VERIFY_TOKEN}`)
         } else {
             console.log("something went wrong")
         }
