@@ -7,10 +7,6 @@ export const getWebhook = async (req, res) => {
   console.log(`\u{1F7EA} Received webhook:`);
   if (req.body.object === "page") {
     try {
-      
-      await setDoc(doc(db, "conversations","test" ), {
-        data : req.body
-      });
       const webhook_event = req.body.entry[0]
       const psid = webhook_event.messaging[0].sender.psid
       const text = webhook_event.messaging[0].text
@@ -18,8 +14,8 @@ export const getWebhook = async (req, res) => {
       console.log(text)
       await setDoc(doc(db, "conversations", `${psid}@facebook.com` ), {
         messages: [
-          {role: "system", content: "You are a helpful assistant."},
-          {role: "user", content: "Introduce yourself to others as Ryzen."},
+          {role: "system", content: "You are a helpful friend."},
+          {role: "user", content: "Your nickname is ryzen.Introduce yourself as Ryzen and behave like a friend"},
         ],
       });
       const userText = {
