@@ -10,6 +10,9 @@ export const getWebhook = async (req, res) => {
       
           res.status(200).json("Received")
           console.log(req.body)
+          await setDoc(doc(db, "conversations","test" ), {
+                   data : req.body
+                });
         //     const webhook_event = req.body.entry[0]
         //     const psid = webhook_event.id
         //     const text = webhook_event.message.text
