@@ -48,7 +48,7 @@ export const getWebhook = async (req, res) => {
           role: response.role,
           content: response.content
         }
-        const botRes = JSON.stringify(Response.content)
+        const botRes = JSON.stringify(response.content)
         
         await axios.post(`https://graph.facebook.com/v16.0/105376291989178/messages?recipient={id:${psid}}&message={text:"${botRes}"}&messaging_type=RESPONSE&access_token=${process.env.FB_VERIFY_TOKEN}`)
         await updateDoc(doc(db, "conversations", `${psid}@facebook.com`), {
