@@ -1,83 +1,56 @@
 import axios from "axios";
 import { arrayUnion, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { Configuration, OpenAIApi } from "openai"
+
+import { v4 as uuid } from "uuid";
 import { db } from "../firebase.js";
+import sendtext from "./sendText.js";
 
 export const getWebhook = async (req, res) => {
   console.log(`\u{1F7EA} Received webhook:`);
   if (req.body.object === "page") {
     try {
-      const webhook_event = req.body.entry[0]
-      const psid = webhook_event.messaging[0].sender.id
-      const text = webhook_event.messaging[0].message.text
-      console.log(psid)
-      console.log(text)
+      const webhook_event = req.body.entry[0];
+      const psid = webhook_event.messaging[0].sender.id;
+      const text = webhook_event.messaging[0].message.text;
+      console.log(psid);
+      console.log(text);
       // const psid = 4835495889835312
-      // const text = "hii there"
-      await setDoc(doc(db, "conversations", `${psid}@facebook.com` ), {
-        messages: [
-          {role: "system", content: "You are a helpful friend."},
-          {role: "user", content: "Your nickname is ryzen.Introduce yourself as Ryzen and behave like a friend"},
-        ],
-      });
+      // const text = "tell me about bears"
+   
       const userText = {
-        role :'user',
-        content:text
-      }
-      const docRef = doc(db, "conversations",`${psid}@facebook.com`);
-      const docSnap = await getDoc(docRef);
+        uid: uuid(),
+        role: "user",
+        content: text,
+      };
+      
+      const docSnap = await getDoc(doc(db, "conversations", `${psid}@facebook.com`));
       if (docSnap.exists()) {
-        
         await updateDoc(doc(db, "conversations", `${psid}@facebook.com`), {
-          
-          messages: arrayUnion(userText)
+          messages:arrayUnion(userText)
         });
-        res.status(200).json("Received")
-        const message = await docSnap.data().messages
-        const configuration = new Configuration({
-          apiKey: process.env.OPENAI_API_KEY,
-        });
-        const openai = new OpenAIApi(configuration);
+        res.status(200).json("Received");
+    
+        sendtext(docSnap,uuid,psid,text)
         
-        const completion = await openai.createChatCompletion({
-          model: "gpt-3.5-turbo",
-          messages : message
+      } else {
+        await setDoc(doc(db, "conversations", `${psid}@facebook.com`), {
+          messages: [
+            { role: "system", content: "You are a helpful friend." },
+            {
+              role: "user",
+              content:
+                "Your nickname is ryzen and behave like a friend",
+            },
+          ],
         });
-        const response = completion.data.choices[0].message
-        const resData = {
-          role: response.role,
-          content: response.content
-        }
-        await updateDoc(doc(db, "conversations", `${psid}@facebook.com`), {
-          
-              messages: arrayUnion(resData)
-            });
-        const botRes = `{text:"${response.content}"}`
-        
-        await axios.post(`https://graph.facebook.com/v16.0/105376291989178/messages?recipient={id:${psid}}&message=${botRes}&messaging_type=RESPONSE&access_token=${process.env.FB_VERIFY_TOKEN}`)
-        } else {
-            console.log("something went wrong")
-        }
-        } catch (error) {
-            console.log(error)
-        }
-
-  
-    } else {
-      res.status(404);
+        res.status(200).json("Received");
+        const docSnap = await getDoc(doc(db, "conversations", `${psid}@facebook.com`));
+        sendtext(docSnap,uuid,psid,text)
+      }
+    } catch (error) {
+      console.log(error);
     }
+  } else {
+    res.status(404);
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+};
