@@ -9,13 +9,13 @@ export const getWebhook = async (req, res) => {
   console.log(`\u{1F7EA} Received webhook:`);
   if (req.body.object === "page") {
     try {
-      const webhook_event = req.body.entry[0];
-      const psid = webhook_event.messaging[0].sender.id;
-      const text = webhook_event.messaging[0].message.text;
+      // const webhook_event = req.body.entry[0];
+      // const psid = webhook_event.messaging[0].sender.id;
+      // const text = webhook_event.messaging[0].message.text;
       // console.log(psid);
       // console.log(text);
-      // const psid = 4835495889835312
-      // const text = "hii"
+      const psid = 4835495889835312
+      const text = "hii"
    
       const userText = {
         uid: uuid(),
@@ -37,7 +37,7 @@ export const getWebhook = async (req, res) => {
       } else {
         await setDoc(doc(db, "conversations", `${psid}@facebook.com`), {
           messages: [
-            { role: "system", content: "You are a helpful and understanding friend and you will introduce yourself by name of ryzen." },
+            { role: "system", content: "You are a helpful and understanding friend and You will introduce yourself by name of ryzen and the admin of this page is Jatin." },
           ],
         });
         await updateDoc(doc(db, "conversations", `${psid}@facebook.com`), {
