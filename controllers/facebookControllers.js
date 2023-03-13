@@ -37,7 +37,7 @@ export const getWebhook = async (req, res) => {
       } else {
         await setDoc(doc(db, "conversations", `${psid}@facebook.com`), {
           messages: [
-            { role: "system", content: "You are a helpful friend and you will introduce yourself by name of ryzen." },
+            { role: "system", content: "You are a helpful and understanding friend and you will introduce yourself by name of ryzen." },
           ],
         });
         await updateDoc(doc(db, "conversations", `${psid}@facebook.com`), {
