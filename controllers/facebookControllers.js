@@ -1,9 +1,4 @@
-import axios from "axios";
-import { arrayUnion, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-
-import { v4 as uuid } from "uuid";
-import { db } from "../firebase.js";
-import sendtext from "./sendText.js";
+import botRes from "./functions/botResponse.js";
 
 export const getWebhook = async (req, res) => {
   console.log(`\u{1F7EA} Received webhook:`);
@@ -12,45 +7,32 @@ export const getWebhook = async (req, res) => {
       const webhook_event = req.body.entry[0];
       const psid = webhook_event.messaging[0].sender.id;
       const text = webhook_event.messaging[0].message.text;
-      console.log(psid);
-      console.log(text);
-      // const psid = 4835495889835312
-      // const text = "hii"
-   
-      const userText = {
-        uid: uuid(),
-        role: "user",
-        content: text,
-      };
+      // console.log(psid);
+      // console.log(text);
+
+
+
+
+        botRes(res, text, psid);
       
-      const docSnap = await getDoc(doc(db, "conversations", `${psid}@facebook.com`));
-      if (docSnap.exists()) {
-        await updateDoc(doc(db, "conversations", `${psid}@facebook.com`), {
-          messages:arrayUnion(userText)
-        });
-        const docData = await getDoc(doc(db, "conversations", `${psid}@facebook.com`));
-        const messageArr = await docData.data().messages;
-        const message = messageArr.map(({ uid, ...others }) => others);
-        sendtext(message,uuid,psid,text)
-        res.status(200).json("Received webhook");
-        
-      } else {
-        await setDoc(doc(db, "conversations", `${psid}@facebook.com`), {
-          messages: [
-            { role: "system", content: "You are a helpful and understanding friend and You will introduce yourself by name of ryzen and the admin of this page is Jatin." },
-          ],
-        });
-        await updateDoc(doc(db, "conversations", `${psid}@facebook.com`), {
-          messages:arrayUnion(userText)
-        });
-        const docSnap = await getDoc(doc(db, "conversations", `${psid}@facebook.com`));
-        const messageArr = await docSnap.data().messages;
-        const message = messageArr.map(({ uid, ...others }) => others);
-        sendtext(message,uuid,psid,text)
-        res.status(200).json("Received");
-      }
     } catch (error) {
-      console.log(error);
+      await axios.post(
+        `https://graph.facebook.com/v16.0/${process.env.FB_PAGE_ID}/messages?&access_token=${process.env.FB_VERIFY_TOKEN}`,
+        {
+          recipient: {
+            id: `${psid}`,
+          },
+          messaging_type: "RESPONSE",
+          message: {
+            text: "Something went wrong!Please try again later.🙂",
+          },
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
     }
   } else {
     res.status(404);

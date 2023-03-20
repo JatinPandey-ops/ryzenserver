@@ -1,6 +1,6 @@
 import { Configuration, OpenAIApi } from "openai";
 import axios from "axios";
-import { db } from "../firebase.js";
+import { db } from "../../firebase.js";
 import { arrayUnion, doc, updateDoc } from "firebase/firestore";
 
 const sendtext = async (message,uuid,psid)=> {
