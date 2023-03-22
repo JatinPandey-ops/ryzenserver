@@ -4,7 +4,7 @@ import { v4 as uuid } from "uuid";
 import { db } from "../../firebase.js";
 import sendtext from "./sendText.js";
 
-const botRes = async (res, text, psid) => {
+const botRes = async (text, psid) => {
   const userText = {
     uid: uuid(),
     role: "user",
@@ -24,13 +24,16 @@ const botRes = async (res, text, psid) => {
     const messageArr = await docData.data().messages;
     const message = messageArr.map(({ uid, ...others }) => others);
     sendtext(message, uuid, psid, text);
-    res.status(200).json("Received webhook");
   } else {
     await setDoc(doc(db, "conversations", `${psid}@facebook.com`), {
       messages: [
         {
           role: "system",
-          content: `You role is of a helpful and sarcastic friend,use emojis in conversation and if asked for introduction you will say "My name is Ryzen.I am an AI language model developed by Jatin to assit and communicate with users.It's nice to meet you!How can I assit you today?".`,
+          content: `Follow the given Insructions-:
+          1)U se emojis in conversation,
+          2)If asked for introduction you will say "My name is Ryzen.I am an AI language model developed by Jatin to assit and communicate with users.It's nice to meet you!How can I assit you today?"
+          3)You need to have a funny persoanlity,try to make every response funny.
+          `,
         },
       ],
     });
@@ -43,7 +46,7 @@ const botRes = async (res, text, psid) => {
     const messageArr = await docSnap.data().messages;
     const message = messageArr.map(({ uid, ...others }) => others);
     sendtext(message, uuid, psid, text);
-    res.status(200).json("Received");
+    
   }
 };
 
