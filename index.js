@@ -1,17 +1,34 @@
 import Express from "express";
 import authRoute from "./routes/authRoute.js";
 import chatRoute from "./routes/chatRoute.js";
+import PaymentRoute from "./routes/PaymentRoute.js"
+import updateRoute from "./routes/updateRoute.js"
 import dotenv from "dotenv";
+import cors from "cors"
 import { getWebhook } from "./controllers/facebookControllers.js";
 
 const app = Express();
+
 const port = process.env.PORT || 8000;
 dotenv.config();
+app.use(cors({origin:"*"}));
 app.get("/",(req,res) => {
     res.status(200).json("Connected")
 })
 app.use(Express.json());
+app.use((err,req,res,next) => {
+  const status = err.status || 500 ;
+  const message = err.message || "Something went wrong";
+  return res.status(status).json({
+    success:false,
+    status,
+    message,
+  })
+});
 app.use("/api/auth", authRoute);
+app.use("/api/payment", PaymentRoute);
+app.use("/api/update",updateRoute)
+app.options("/api/chat",cors())
 app.use("/api/chat", chatRoute);
 
 
