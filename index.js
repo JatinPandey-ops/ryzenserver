@@ -30,6 +30,8 @@ app.use("/api/payment", PaymentRoute);
 app.use("/api/update",updateRoute)
 app.options("/api/chat",cors())
 app.use("/api/chat", chatRoute);
+app.options("/api/razorpay-webhook",cors())
+app.use("/api/razorpay-webhook", PaymentRoute);
 
 
 
@@ -45,11 +47,11 @@ app.get("/webhook", (req, res) => {
   let token =
     req.query["hub.verify_token"];
   let challenge = req.query["hub.challenge"];
-  let verify_token = process.env.VERIFY_TOKEN
-  // console.log(mode)
-  // console.log(token)
-  // console.log(challenge)
-  // console.log(verify_token)
+  let verify_token = process.env.FB_VERIFY_TOKEN
+  console.log(mode)
+  console.log(token)
+  console.log(challenge)
+  console.log(verify_token)
   // Check if a token and mode is in the query string of the request
   if (mode && token) {
     // Check the mode and token sent is correct

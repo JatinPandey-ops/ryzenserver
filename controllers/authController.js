@@ -51,6 +51,8 @@ export const register = async (req, res, next) => {
     const email = req.body.email;
     const name = req.body.name;
     const password = req.body.password;
+    const country = req.body.country
+    const currency = req.body.currency
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
@@ -64,7 +66,10 @@ export const register = async (req, res, next) => {
       displayName: name,
       photoURL: user.photoURL,
       premium: false,
-      credits:20
+      credit:20,
+      country:country,
+      currency:currency,
+      subscriptionDays:0
     });
     await setDoc(doc(db, "conversations", user.uid), {
       messages: [

@@ -8,8 +8,8 @@ export const getWebhook = async (req, res) => {
       const webhook_event = req.body.entry[0];
       const psid = webhook_event.messaging[0].sender.id;
       const text = webhook_event.messaging[0].message.text;
-      // console.log(psid);
-      // console.log(text);
+      console.log(psid);
+      console.log(text);
       // const psid = 4835495889835312;
       // const text = "hii Ryzen";
 

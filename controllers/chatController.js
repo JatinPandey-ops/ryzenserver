@@ -3,6 +3,7 @@ import { arrayUnion, doc, getDoc, onSnapshot, setDoc, updateDoc } from "firebase
 import { v4 as uuid }  from "uuid";
 import response from "./functions/response.js";
 import {db} from "../firebase.js"
+import { createError } from "../error.js";
 
 
 export const result = async (req,res) => {
@@ -50,7 +51,11 @@ try {
   }
    
 } catch (error) {
-    console.log(error)
+   next(createError(500,{
+    uid: uuid(),
+    role : "assistant",
+    content : "My server is down!Stay tuned"
+   }))
 }
 
 }

@@ -31,7 +31,13 @@ const response = async (uid,data,docSnap,res) => {
           messages: arrayUnion(resData),
         });
     } catch (error) {
-        console.log(error)
+      res.status(500).json(
+        {
+          uid: uuid(),
+          role : "assistant",
+          content : "My server is down!Stay tuned"
+        }
+      )
     }
 };
 
