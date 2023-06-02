@@ -21,6 +21,7 @@
     "firebase": "^9.17.2",
     "openai": "^3.2.1",
     "razorpay": "^2.8.6",
+    "socket.io": "^4.6.1",
     "stripe": "^12.4.0",
     "uuid": "^9.0.0"
   },

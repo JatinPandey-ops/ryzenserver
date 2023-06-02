@@ -8,7 +8,9 @@ export const updateDetails = async (req, res) => {
   console.log(body)
   console.log(uid)
     try {
-      await updateDoc(doc(db,"users", uid),body)
+      await updateDoc(doc(db,"users", uid),{
+        
+      })
       res.status(200).json("Updated");
     } catch {
       (error) => {

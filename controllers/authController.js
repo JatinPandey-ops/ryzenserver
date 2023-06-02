@@ -49,6 +49,7 @@ export const login = async (req, res,next) => {
 export const register = async (req, res, next) => {
   try {
     const email = req.body.email;
+    console.log(email)
     const name = req.body.name;
     const password = req.body.password;
     const country = req.body.country

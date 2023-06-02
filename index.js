@@ -1,7 +1,6 @@
 import Express from "express";
 import authRoute from "./routes/authRoute.js";
 import chatRoute from "./routes/chatRoute.js";
-import PaymentRoute from "./routes/PaymentRoute.js"
 import updateRoute from "./routes/updateRoute.js"
 import dotenv from "dotenv";
 import cors from "cors"
@@ -26,12 +25,11 @@ app.use((err,req,res,next) => {
   })
 });
 app.use("/api/auth", authRoute);
-app.use("/api/payment", PaymentRoute);
 app.use("/api/update",updateRoute)
 app.options("/api/chat",cors())
 app.use("/api/chat", chatRoute);
-app.options("/api/razorpay-webhook",cors())
-app.use("/api/razorpay-webhook", PaymentRoute);
+
+
 
 
 
