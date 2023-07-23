@@ -10,7 +10,8 @@ import { db } from "../../firebase.js";
 const response = async (uid,data,docSnap,res) => {
     try {
         const messageArr = docSnap.data().messages;
-        const message = messageArr.map(({ uid, ...others }) => others);
+        const message = messageArr.map(({ uid, timestamp, usage, ...others }) => others);
+        console.log(message)
         const configuration = new Configuration({
           apiKey: process.env.OPENAI_API_KEY,
         });
@@ -20,22 +21,25 @@ const response = async (uid,data,docSnap,res) => {
           model: "gpt-3.5-turbo",
           messages: message,
         });
-        const response = completion.data.choices[0].message;
+        const response = completion.data;
         const resData = {
           uid: uuid(),
-          role: response.role,
-          content: response.content,
+          role: response.choices[0].message.role,
+          content: response.choices[0].message.content,
+          timeStamp:response.created,
+          usage:response.usage
         };
         res.status(200).json(resData)
         await updateDoc(doc(db, "conversations", uid), {
           messages: arrayUnion(resData),
         });
     } catch (error) {
-      res.status(500).json(
+      console.log(error)
+      res.status(200).json(
         {
           uid: uuid(),
           role : "assistant",
-          content : "My server is down!Stay tuned"
+          content : "Refresh!!Token exceeded"
         }
       )
     }

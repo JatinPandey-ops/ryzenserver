@@ -16,10 +16,11 @@ export const getWebhook = async (req, res) => {
 
 
 
-       await botRes( text, psid);
+       await botRes(text, psid);
        res.status(200).json("Received")
       
     } catch (error) {
+      res.status(200)
       await axios.post(
         `https://graph.facebook.com/v16.0/${process.env.FB_PAGE_ID}/messages?&access_token=${process.env.FB_VERIFY_TOKEN}`,
         {

@@ -5,7 +5,7 @@ import { createError } from "../error.js";
 
 export const updateDetails = async (req, res) => {
   const { uid, ...body } = req.body;
-  // console.log(body)
+  console.log(body)
   // console.log(body)
   // console.log(uid)
     try {

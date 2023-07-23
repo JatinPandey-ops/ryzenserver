@@ -1,21 +1,23 @@
 import { Configuration, OpenAIApi } from "openai"
-import { arrayUnion, doc, getDoc, onSnapshot, setDoc, updateDoc } from "firebase/firestore";
+import { arrayUnion, deleteDoc, doc, getDoc, onSnapshot, setDoc, updateDoc } from "firebase/firestore";
 import { v4 as uuid }  from "uuid";
 import response from "./functions/response.js";
 import {db} from "../firebase.js"
 import { createError } from "../error.js";
 
 
-export const result = async (req,res) => {
+export const result = async (req,res,next) => {
 try {
   const uid = req.body.uid
+  console.log(req.data)
   const jsonStr = JSON.stringify(req.body)
   const jsonObj = JSON.parse(jsonStr)
   console.log("received")
   const data = {
     uid: uuid(),
     role : jsonObj.role,
-    content : jsonObj.content
+    content : jsonObj.content,
+    timeStamp:jsonObj.timeStamp
   }
  
   const docRef = doc(db, "conversations", uid);
@@ -51,11 +53,7 @@ try {
   }
    
 } catch (error) {
-   next(createError(500,{
-    uid: uuid(),
-    role : "assistant",
-    content : "My server is down!Stay tuned"
-   }))
+  console.log(error)
 }
 
 }
@@ -87,4 +85,16 @@ export const snapshot = async (req,res) => {
     console.log(error)
   }
 
+}
+
+export const reset = async (req,res,next) => {
+  try {
+    
+    const uid = req.body.uid
+    console.log(uid)
+    await deleteDoc(doc(db,"conversations",uid))
+    res.status(200).json("Success")
+  } catch (error) {
+    console.log(error)
+  }
 }
