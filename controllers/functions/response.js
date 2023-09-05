@@ -10,7 +10,7 @@ import { db } from "../../firebase.js";
 const response = async (uid,data,docSnap,res) => {
     try {
         const messageArr = docSnap.data().messages;
-        const message = messageArr.map(({ uid, timestamp, usage, ...others }) => others);
+        const message = messageArr.map(({ uid, timeStamp, usage, ...others }) => others);
         console.log(message)
         const configuration = new Configuration({
           apiKey: process.env.OPENAI_API_KEY,
@@ -29,6 +29,7 @@ const response = async (uid,data,docSnap,res) => {
           timeStamp:response.created,
           usage:response.usage
         };
+        console.group(resData)
         res.status(200).json(resData)
         await updateDoc(doc(db, "conversations", uid), {
           messages: arrayUnion(resData),

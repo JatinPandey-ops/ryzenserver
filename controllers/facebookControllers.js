@@ -21,7 +21,7 @@ export const getWebhook = async (req, res) => {
       
     } catch (error) {
       res.status(200)
-      await axios.post(
+      await axios.post(z
         `https://graph.facebook.com/v16.0/${process.env.FB_PAGE_ID}/messages?&access_token=${process.env.FB_VERIFY_TOKEN}`,
         {
           recipient: {
@@ -38,7 +38,6 @@ export const getWebhook = async (req, res) => {
           },
         }
       );
-      res.status(200).json("Error")
 
     }
   } else {
